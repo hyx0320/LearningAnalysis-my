@@ -1,10 +1,26 @@
 /* --- 顶部导航栏 --- */
 .main-navbar {
     width: 100%;
-    background: rgba(0,0,0,0.6);
+    background: linear-gradient(90deg, #1a1f3d, #0c1225);
     padding: 18px 0 12px 0;
     margin-bottom: 18px;
     box-shadow: 0 2px 12px 0 rgba(0,255,255,0.08);
+    position: relative;
+    overflow: hidden;
+}
+.main-navbar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00ffff, transparent);
+    animation: scanline 3s linear infinite;
+}
+@keyframes scanline {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
 }
 .navbar-title {
     margin: 0;
@@ -13,15 +29,14 @@
     color: #00ffff;
     letter-spacing: 2px;
     font-weight: 600;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
 }
 /* --- 全局与布局 --- */
 body, html {
     margin: 0;
     padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-        'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-        'Noto Color Emoji';
-    background-image: linear-gradient(135deg, #1a1f3d, #0c1225);
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(135deg, #0a0e1f, #0c1225);
     color: #e0e0e0;
     height: 100%;
     overflow-x: hidden;
@@ -32,29 +47,35 @@ body, html {
     min-height: 100vh;
     padding: 20px;
     box-sizing: border-box;
+    max-width: 1800px;
+    margin: 0 auto;
 }
 
 .left-panel {
     width: 60%;
-    padding-right: 10px;
+    padding-right: 20px;
     border-right: 2px solid rgba(0, 255, 255, 0.3);
 }
 
 .right-panel {
     width: 40%;
-    padding-left: 10px;
+    padding-left: 20px;
 }
 
 /* --- 卡片与毛玻璃效果 --- */
 .card-section {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.08);
     border-radius: 12px;
     padding: 24px;
     margin-bottom: 20px;
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 255, 255, 0.15);
 }
 
 .card-section h2 {
@@ -64,11 +85,15 @@ body, html {
     color: #fff;
     border-left: 4px solid #00ffff;
     padding-left: 12px;
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
 }
 
 .chart-container {
     width: 100%;
     height: 400px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 /* --- 左侧内容区 --- */
@@ -95,28 +120,44 @@ body, html {
     border-radius: 50%;
     background: #00ffff;
     box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(0, 255, 255, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(0, 255, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 255, 255, 0); }
 }
 
 .timeline-item {
     margin-bottom: 20px;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: all 0.5s ease;
+}
+.timeline-item.visible {
+    opacity: 1;
+    transform: translateX(0);
 }
 
 .question-card {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     padding: 16px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .question-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 25px rgba(0, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.15);
 }
 
 .question-card h3 {
     margin: 0 0 8px 0;
     color: #fff;
+    font-size: 1.2rem;
 }
 
 .question-card p {
@@ -128,11 +169,21 @@ body, html {
 .question-card span {
     font-size: 14px;
     font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 4px;
 }
-.question-card span:contains("已掌握") { color: #52c41a; }
-.question-card span:contains("待加强") { color: #faad14; }
-.question-card span:contains("薄弱点") { color: #ff4d4f; }
-
+.question-card .status-mastered { 
+    color: #52c41a;
+    background: rgba(82, 196, 26, 0.1);
+}
+.question-card .status-improving { 
+    color: #faad14;
+    background: rgba(250, 173, 20, 0.1);
+}
+.question-card .status-weak { 
+    color: #ff4d4f;
+    background: rgba(255, 77, 79, 0.1);
+}
 
 /* --- 右侧描述区 --- */
 
@@ -145,6 +196,7 @@ body, html {
 .error-analysis p {
     line-height: 1.8;
     margin-bottom: 16px;
+    font-size: 15px;
 }
 
 .error-analysis .keyword {
@@ -153,9 +205,25 @@ body, html {
     text-shadow: 0 0 8px #00ffff, 0 0 12px rgba(0, 255, 255, 0.7);
     cursor: pointer;
     transition: text-shadow 0.3s ease;
+    position: relative;
+    padding: 0 4px;
 }
 .error-analysis .keyword:hover {
     text-shadow: 0 0 12px #00ffff, 0 0 20px rgba(0, 255, 255, 1);
+}
+.error-analysis .keyword::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #00ffff;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+.error-analysis .keyword:hover::after {
+    transform: scaleX(1);
 }
 
 /* 知识盲点提示 */
@@ -170,32 +238,76 @@ body, html {
     padding: 12px;
     margin-bottom: 12px;
     border-radius: 6px;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 3px solid #ff4d4f;
 }
 
 .knowledge-gaps-list li:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateX(5px);
 }
 
 .knowledge-gaps-list svg {
     color: #ff4d4f;
     font-size: 20px;
     margin-right: 12px;
+    flex-shrink: 0;
 }
 
 /* 弱项分布说明 */
 .warning-box {
     background: rgba(250, 173, 20, 0.15);
     border: 1px solid #faad14;
-    border-radius: 4px;
-    padding: 8px 16px;
+    border-radius: 8px;
+    padding: 12px 16px;
     margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+}
+.warning-box::before {
+    content: '⚠️';
+    font-size: 20px;
+    margin-right: 10px;
 }
 
 .warning-box p {
     margin: 0;
     font-size: 14px;
     color: #faad14;
+}
+
+/* 加载状态 */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 14, 31, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    flex-direction: column;
+}
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(0, 255, 255, 0.3);
+    border-top: 5px solid #00ffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.loading-text {
+    color: #00ffff;
+    font-size: 18px;
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
 }
 
 /* --- 响应式适配 --- */
@@ -212,5 +324,9 @@ body, html {
 
     .left-panel {
         margin-bottom: 20px;
+        padding-right: 0;
+    }
+    .right-panel {
+        padding-left: 0;
     }
 }

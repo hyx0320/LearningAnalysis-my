@@ -1,10 +1,6 @@
-document.addEventListener('DOMContentLoaded', function () {
-
-    // --- 1. 左侧知识图谱可视化 ---
-    const graphChart = echarts.init(document.getElementById('knowledge-graph'));
-
-    // 示例数据
-    const graphData = {
+// 页面数据定义
+const pageData = {
+    knowledgeGraph: {
         nodes: [
             { id: '1', name: 'JavaScript基础', symbolSize: 50, category: 1, value: 20 },
             { id: '2', name: '变量作用域', symbolSize: 40, category: 1, value: 15 },
@@ -25,189 +21,267 @@ document.addEventListener('DOMContentLoaded', function () {
             { source: '4', target: '6' },
             { source: '8', target: '4' },
         ],
-        categories: [ // 节点类别，用于图例
+        categories: [
             { name: '薄弱点' },
             { name: '已掌握' },
             { name: '待加强' }
         ]
-    };
-
-    const graphOption = {
-        tooltip: {
-            formatter: '{b}'
-        },
-        legend: [{
-            data: graphData.categories.map(a => a.name),
-            textStyle: { color: '#fff' }
-        }],
-        color: ['#ff4d4f', '#52c41a', '#faad14'], // 对应薄弱点、已掌握、待加强
-        animationDuration: 1500,
-        animationEasingUpdate: 'quinticInOut',
-        series: [{
-            type: 'graph',
-            layout: 'force',
-            data: graphData.nodes.map(node => ({
-                ...node,
-                // 根据 category 设置颜色
-                itemStyle: {
-                    color: ['#ff4d4f', '#52c41a', '#faad14'][node.category]
-                }
-            })),
-            links: graphData.links,
-            categories: graphData.categories,
-            roam: true, // 开启缩放和平移
-            label: {
-                show: true,
-                position: 'right',
-                formatter: '{b}',
-                color: '#fff'
-            },
-            force: {
-                repulsion: 150,
-                edgeLength: 80
-            },
-            lineStyle: {
-                color: '#00ffff',
-                width: 2,
-                curveness: 0.1
-            },
-            // 连接线霓虹动画效果
-            edgeSymbol: ['none', 'arrow'],
-            edgeSymbolSize: [4, 10],
-            emphasis: {
-                focus: 'adjacency',
-                lineStyle: {
-                    width: 4
-                }
-            },
-            // 涟漪特效配置
-            rippleEffect: {
-                brushType: 'stroke'
-            }
-        }]
-    };
-    
-    // 使用 requestAnimationFrame 进行分片渲染（大数据量时）
-    // 这是一个简化示例，实际应用中需要更复杂的逻辑
-    let renderedNodeCount = 0;
-    const totalNodes = graphData.nodes.length;
-    const nodesPerFrame = 5; // 每帧渲染的节点数
-
-    function progressiveRender() {
-        if (renderedNodeCount < totalNodes) {
-            // 此处应为实际的分片加载和设置数据的逻辑
-            // ECharts 本身对大数据有优化，这里仅为演示概念
-            renderedNodeCount += nodesPerFrame;
-            requestAnimationFrame(progressiveRender);
-        }
-    }
-    // progressiveRender(); // 如果数据量巨大，可以启用此函数
-
-    graphChart.setOption(graphOption);
-
-
-    // --- 2. 右侧弱项分布树 ---
-    const treeChart = echarts.init(document.getElementById('knowledge-tree'));
-    const treeData = {
+    },
+    timelineItems: [
+        { title: '题目 1：关于变量作用域', time: '2023-10-01 10:30', status: '已掌握', statusClass: 'status-mastered' },
+        { title: '题目 2：深入理解闭包', time: '2023-10-01 11:15', status: '待加强', statusClass: 'status-improving' },
+        { title: '题目 3：异步编程与Promise', time: '2023-10-02 09:00', status: '薄弱点', statusClass: 'status-weak' },
+        { title: '题目 4：事件循环与宏任务', time: '2023-10-03 14:20', status: '薄弱点', statusClass: 'status-weak' },
+        { title: '题目 5：ES6箭头函数', time: '2023-10-04 10:45', status: '已掌握', statusClass: 'status-mastered' }
+    ],
+    errorAnalysis: `
+        <p>
+            在"异步编程与Promise"题目中，主要错误在于对 <span class="keyword">Promise.all</span> 的使用场景理解不清。当其中一个Promise被 reject 时，整个 Promise.all 会立即失败，而未考虑到需要等待所有Promise完成（无论成功或失败）的场景，此时应使用 <span class="keyword">Promise.allSettled</span>。
+        </p>
+        <p>
+            此外，对于<span class="keyword">事件循环(Event Loop)</span>的宏任务与微任务执行顺序的掌握也存在不足，特别是对setTimeout与Promise执行顺序的理解不够深入。
+        </p>
+    `,
+    knowledgeGaps: [
+        'Promise.allSettled 的具体用法',
+        '宏任务与微任务的执行差异',
+        'JavaScript 垃圾回收机制',
+        '闭包的内存泄漏问题',
+        'async/await错误处理'
+    ],
+    knowledgeTree: {
         name: 'JavaScript',
         children: [
             {
                 name: '异步编程',
-                itemStyle: { color: '#ff4d4f', borderColor: '#ff4d4f' }, // 薄弱点
+                itemStyle: { color: '#ff4d4f', borderColor: '#ff4d4f' },
                 children: [
                     { name: 'Promise', itemStyle: { color: '#ff4d4f' } },
-                    { name: 'async/await', itemStyle: { color: '#faad14' } }
+                    { name: 'async/await', itemStyle: { color: '#faad14' } },
+                    { name: '事件循环', itemStyle: { color: '#ff4d4f' } }
                 ]
             },
             {
                 name: 'ES6+',
-                itemStyle: { color: '#52c41a', borderColor: '#52c41a' }, // 已掌握
+                itemStyle: { color: '#52c41a', borderColor: '#52c41a' },
                 children: [
                     { name: '箭头函数', itemStyle: { color: '#52c41a' } },
-                    { name: '解构赋值', itemStyle: { color: '#52c41a' } }
+                    { name: '解构赋值', itemStyle: { color: '#52c41a' } },
+                    { name: '模板字符串', itemStyle: { color: '#52c41a' } }
+                ]
+            },
+            {
+                name: '作用域',
+                itemStyle: { color: '#faad14', borderColor: '#faad14' },
+                children: [
+                    { name: '闭包', itemStyle: { color: '#faad14' } },
+                    { name: '变量提升', itemStyle: { color: '#52c41a' } }
                 ]
             }
         ]
-    };
+    }
+};
 
-    const treeOption = {
-        tooltip: {
-            trigger: 'item',
-            triggerOn: 'mousemove'
-        },
-        series: [{
-            type: 'tree',
-            data: [treeData],
-            top: '5%',
-            left: '15%',
-            bottom: '5%',
-            right: '15%',
-            symbolSize: 10,
-            label: {
-                position: 'left',
-                verticalAlign: 'middle',
-                align: 'right',
-                fontSize: 14,
-                color: '#e0e0e0'
-            },
-            leaves: {
-                label: {
-                    position: 'right',
-                    verticalAlign: 'middle',
-                    align: 'left'
-                }
-            },
-            emphasis: {
-                focus: 'descendant'
-            },
-            expandAndCollapse: true,
-            animationDuration: 550,
-            animationDurationUpdate: 750
-        }]
-    };
-
-    treeChart.setOption(treeOption);
-
-    // --- 3. 交互与性能优化 ---
-
-    // 节点点击联动数据更新
-    graphChart.on('click', function (params) {
-        if (params.dataType === 'node') {
-            console.log('点击了节点:', params.name);
-            // 假设这里会根据点击的节点名称，去请求并更新右侧的数据
-            const rightPanel = document.querySelector('.right-panel');
-            const analysisTitle = rightPanel.querySelector('h2');
-            analysisTitle.textContent = `关于“${params.name}”的分析`;
-            // ...此处可以添加更多数据更新逻辑...
-        }
+// API接口 - 模拟从后端获取数据
+function fetchData() {
+    return new Promise((resolve) => {
+        // 模拟网络延迟
+        setTimeout(() => {
+            resolve(pageData);
+        }, 1500);
     });
+}
 
-    // IntersectionObserver 处理滚动固定/动画
-    const sequenceSection = document.getElementById('sequence-section');
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = 1;
-                entry.target.style.transform = 'translateY(0)';
-                // 可以取消观察以避免重复触发
-                // observer.unobserve(entry.target); 
-            }
-        });
-    }, {
-        threshold: 0.5 // 当元素50%可见时触发
-    });
-
-    // 为做题序列卡片添加入场动画
-    document.querySelectorAll('.question-card').forEach((card, index) => {
-        card.style.opacity = 0;
-        card.style.transform = 'translateY(30px)';
-        card.style.transition = `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`;
-        observer.observe(card);
-    });
+// 页面初始化函数
+document.addEventListener('DOMContentLoaded', function () {
+    const loadingOverlay = document.getElementById('loading');
     
-    // 确保图表在窗口大小变化时自适应
-    window.addEventListener('resize', function() {
-        graphChart.resize();
-        treeChart.resize();
-    });
+    // 初始化图表
+    function initCharts(data) {
+        // 知识图谱
+        const graphChart = echarts.init(document.getElementById('knowledge-graph'));
+        const graphOption = {
+            tooltip: {
+                formatter: '{b}'
+            },
+            legend: [{
+                data: data.knowledgeGraph.categories.map(a => a.name),
+                textStyle: { color: '#fff' },
+                right: 20,
+                top: 20
+            }],
+            color: ['#ff4d4f', '#52c41a', '#faad14'],
+            animationDuration: 1500,
+            animationEasingUpdate: 'quinticInOut',
+            series: [{
+                type: 'graph',
+                layout: 'force',
+                data: data.knowledgeGraph.nodes.map(node => ({
+                    ...node,
+                    itemStyle: {
+                        color: ['#ff4d4f', '#52c41a', '#faad14'][node.category]
+                    },
+                    label: {
+                        show: true,
+                        position: 'right',
+                        formatter: '{b}',
+                        color: '#fff',
+                        fontSize: 14
+                    }
+                })),
+                links: data.knowledgeGraph.links,
+                categories: data.knowledgeGraph.categories,
+                roam: true,
+                force: {
+                    repulsion: 150,
+                    edgeLength: 80,
+                    gravity: 0.1
+                },
+                lineStyle: {
+                    color: '#00ffff',
+                    width: 2,
+                    curveness: 0.1,
+                    opacity: 0.7
+                },
+                edgeSymbol: ['none', 'arrow'],
+                edgeSymbolSize: [4, 10],
+                emphasis: {
+                    focus: 'adjacency',
+                    lineStyle: {
+                        width: 4
+                    }
+                },
+                rippleEffect: {
+                    brushType: 'stroke',
+                    scale: 3
+                }
+            }]
+        };
+        graphChart.setOption(graphOption);
+
+        // 弱项分布树
+        const treeChart = echarts.init(document.getElementById('knowledge-tree'));
+        const treeOption = {
+            tooltip: {
+                trigger: 'item',
+                triggerOn: 'mousemove',
+                formatter: '{b}'
+            },
+            series: [{
+                type: 'tree',
+                data: [data.knowledgeTree],
+                top: '5%',
+                left: '15%',
+                bottom: '5%',
+                right: '15%',
+                symbolSize: 12,
+                label: {
+                    position: 'left',
+                    verticalAlign: 'middle',
+                    align: 'right',
+                    fontSize: 14,
+                    color: '#e0e0e0'
+                },
+                leaves: {
+                    label: {
+                        position: 'right',
+                        verticalAlign: 'middle',
+                        align: 'left'
+                    }
+                },
+                itemStyle: {
+                    borderColor: '#00ffff',
+                    borderWidth: 1
+                },
+                lineStyle: {
+                    color: '#00ffff',
+                    width: 1,
+                    curveness: 0.3
+                },
+                emphasis: {
+                    focus: 'descendant'
+                },
+                expandAndCollapse: true,
+                animationDuration: 550,
+                animationDurationUpdate: 750
+            }]
+        };
+        treeChart.setOption(treeOption);
+
+        // 窗口大小变化时重绘
+        window.addEventListener('resize', function() {
+            graphChart.resize();
+            treeChart.resize();
+        });
+    }
+
+    // 渲染做题序列
+    function renderTimeline(items) {
+        const container = document.getElementById('timeline-container');
+        container.innerHTML = '';
+        
+        items.forEach((item, index) => {
+            const element = document.createElement('div');
+            element.className = 'timeline-item';
+            element.innerHTML = `
+                <div class="question-card">
+                    <h3>${item.title}</h3>
+                    <p>完成时间：${item.time}</p>
+                    <span class="${item.statusClass}">状态：${item.status}</span>
+                </div>
+            `;
+            container.appendChild(element);
+            
+            // 添加延迟动画
+            setTimeout(() => {
+                element.classList.add('visible');
+            }, 300 + (index * 200));
+        });
+    }
+
+    // 渲染错题分析和知识盲点
+    function renderContent(data) {
+        document.getElementById('error-analysis').innerHTML = data.errorAnalysis;
+        
+        const gapsContainer = document.getElementById('knowledge-gaps');
+        gapsContainer.innerHTML = '';
+        
+        data.knowledgeGaps.forEach(gap => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <svg viewBox="64 64 896 896" focusable="false" data-icon="close-circle" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm165.4 618.2l-66-.3L512 563.4l-99.3 118.4-66.1.3c-4.4 0-8-3.5-8-8 0-1.9.7-3.7 1.9-5.2l130.1-155L383 361.7l.3-66.1c0-4.4 3.5-8 8-8 1.9 0 3.7.7 5.2 1.9l155 130.1 118.4-99.3.3 66.1c0 4.4-3.5 8-8 8a8 8 0 01-5.2-1.9L563.4 512l118.4 99.3.3 66.1c0 4.4-3.5 8-8 8z"></path></svg>
+                ${gap}
+            `;
+            gapsContainer.appendChild(li);
+        });
+    }
+
+    // 加载数据并初始化页面
+    async function initPage() {
+        try {
+            // 使用fetchData API获取数据
+            const data = await fetchData();
+            
+            // 初始化图表
+            initCharts(data);
+            
+            // 渲染内容
+            renderTimeline(data.timelineItems);
+            renderContent(data);
+            
+            // 隐藏加载动画
+            setTimeout(() => {
+                loadingOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                }, 500);
+            }, 500);
+        } catch (error) {
+            console.error('数据加载失败:', error);
+            loadingOverlay.querySelector('.loading-text').textContent = '数据加载失败，请刷新重试';
+        }
+    }
+
+    // 启动页面初始化
+    initPage();
 });
