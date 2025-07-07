@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知识图谱分析</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="main-navbar">
+        <h1 class="navbar-title">认知溯因详情页</h1>
+    </nav>
+    <div class="main-container">
+        <div class="left-panel">
+            <div class="card-section">
+                <h2>知识图谱可视化</h2>
+                <div id="knowledge-graph" class="chart-container"></div>
+            </div>
+            <div class="card-section" id="sequence-section">
+                <h2>做题序列展示</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="question-card">
+                            <h3>题目 1：关于变量作用域</h3>
+                            <p>完成时间：2023-10-01 10:30</p>
+                            <span>状态：已掌握</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="question-card">
+                            <h3>题目 2：深入理解闭包</h3>
+                            <p>完成时间：2023-10-01 11:15</p>
+                            <span>状态：待加强</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="question-card">
+                            <h3>题目 3：异步编程与Promise</h3>
+                            <p>完成时间：2023-10-02 09:00</p>
+                            <span>状态：薄弱点</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="card-section">
+                <h2>错题原因分析</h2>
+                <div class="error-analysis">
+                    <p>
+                        在“异步编程与Promise”题目中，主要错误在于对 <span class="keyword">Promise.all</span> 的使用场景理解不清。当其中一个Promise被 reject 时，整个 Promise.all 会立即失败，而未考虑到需要等待所有Promise完成（无论成功或失败）的场景，此时应使用 <span class="keyword">Promise.allSettled</span>。
+                    </p>
+                    <p>
+                        此外，对于<span class="keyword">事件循环(Event Loop)</span>的宏任务与微任务执行顺序的掌握也存在不足。
+                    </p>
+                </div>
+            </div>
+             <div class="card-section">
+                <h2>知识盲点提示</h2>
+                <ul class="knowledge-gaps-list">
+                    <li>
+                        <svg viewBox="64 64 896 896" focusable="false" data-icon="close-circle" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm165.4 618.2l-66-.3L512 563.4l-99.3 118.4-66.1.3c-4.4 0-8-3.5-8-8 0-1.9.7-3.7 1.9-5.2l130.1-155L383 361.7l.3-66.1c0-4.4 3.5-8 8-8 1.9 0 3.7.7 5.2 1.9l155 130.1 118.4-99.3.3 66.1c0 4.4-3.5 8-8 8a8 8 0 01-5.2-1.9L563.4 512l118.4 99.3.3 66.1c0 4.4-3.5 8-8 8z"></path></svg>
+                        Promise.allSettled 的具体用法
+                    </li>
+                    <li>
+                        <svg viewBox="64 64 896 896" focusable="false" data-icon="close-circle" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm165.4 618.2l-66-.3L512 563.4l-99.3 118.4-66.1.3c-4.4 0-8-3.5-8-8 0-1.9.7-3.7 1.9-5.2l130.1-155L383 361.7l.3-66.1c0-4.4 3.5-8 8-8 1.9 0 3.7.7 5.2 1.9l155 130.1 118.4-99.3.3 66.1c0 4.4-3.5 8-8 8a8 8 0 01-5.2-1.9L563.4 512l118.4 99.3.3 66.1c0 4.4-3.5 8-8 8z"></path></svg>
+                        宏任务与微任务的执行差异
+                    </li>
+                     <li>
+                        <svg viewBox="64 64 896 896" focusable="false" data-icon="close-circle" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm165.4 618.2l-66-.3L512 563.4l-99.3 118.4-66.1.3c-4.4 0-8-3.5-8-8 0-1.9.7-3.7 1.9-5.2l130.1-155L383 361.7l.3-66.1c0-4.4 3.5-8 8-8 1.9 0 3.7.7 5.2 1.9l155 130.1 118.4-99.3.3 66.1c0 4.4-3.5 8-8 8a8 8 0 01-5.2-1.9L563.4 512l118.4 99.3.3 66.1c0 4.4-3.5 8-8 8z"></path></svg>
+                        JavaScript 垃圾回收机制
+                    </li>
+                </ul>
+            </div>
+            <div class="card-section">
+                <h2>弱项分布说明</h2>
+                <div class="warning-box">
+                    <p>注意：以下是根据您最近的做题记录生成的知识点弱项分布树，请重点关注红色警示区域。</p>
+                </div>
+                <div id="knowledge-tree" class="chart-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
