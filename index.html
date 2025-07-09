@@ -3,26 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>认知溯因分析系统</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <title>知识图谱分析</title>
     <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
 </head>
 <body>
-    <div class="api-status connected" id="apiStatus">
-        <i class="fas fa-database"></i> 正在使用模拟数据
-    </div>
-    
-    <div class="loading-overlay" id="loading">
-        <div class="spinner"></div>
-        <div class="loading-text" id="loadingText">正在加载知识图谱数据...</div>
-    </div>
-
     <nav class="main-navbar">
         <h1 class="navbar-title">认知溯因详情页</h1>
     </nav>
-    
     <div class="main-container">
         <div class="left-panel">
             <div class="card-section">
@@ -31,23 +18,20 @@
             </div>
             <div class="card-section" id="sequence-section">
                 <h2>做题序列展示</h2>
-                <div class="timeline" id="timeline-container">
-                    <!-- 动态生成做题序列 -->
+                <div class="timeline">
                 </div>
             </div>
         </div>
 
         <div class="right-panel">
             <div class="card-section">
-                <h2>知识点详细分析</h2>
-                <div class="error-analysis" id="error-analysis">
-                    <!-- 动态生成分析内容 -->
+                <h2>错题原因分析</h2>
+                <div class="error-analysis">
                 </div>
             </div>
              <div class="card-section">
                 <h2>知识盲点提示</h2>
-                <ul class="knowledge-gaps-list" id="knowledge-gaps">
-                    <!-- 动态生成知识盲点 -->
+                <ul class="knowledge-gaps-list">
                 </ul>
             </div>
             <div class="card-section">
@@ -60,21 +44,7 @@
         </div>
     </div>
 
-    <div class="data-source-controls">
-        <h3>数据源控制面板</h3>
-        <div class="control-group">
-            <button id="useMockData" class="active">使用模拟数据</button>
-            <button id="useRealApi">使用真实API</button>
-        </div>
-        
-        <div class="config-section">
-            <label>API端点:</label>
-            <input type="text" id="apiEndpoint" value="https://your-backend-api.com/analysis" placeholder="输入API端点URL">
-        </div>
-        
-        <div class="control-group" style="margin-top: 15px;">
-            <button id="reloadData">重新加载数据</button>
-        </div>
-    </div>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>
